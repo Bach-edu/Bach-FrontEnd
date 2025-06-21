@@ -1,11 +1,13 @@
-import  { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Music, Mail, Lock, User, MapPin, Guitar, Eye, EyeOff } from 'lucide-react';
+import { useAuthStore } from '../../stores/authStore';
 
 const LoginPage = () => {
+  const { login, register, isLoading, isAuthenticated } = useAuthStore();
+  const navigate = useNavigate();
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -14,32 +16,22 @@ const LoginPage = () => {
     instrument: ''
   });
 
-  const [message, setMessage] = useState('');
-
-  // Simulación de login
-  const mockLogin = async (email, password) => {
-    console.log('🔐 Login:', email, password);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return true;
-  };
-
-  // Simulación de registro
-  const mockRegister = async (data) => {
-    console.log('📝 Register:', data);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return true;
-  };
+  useEffect(() => {
+    console.log('🔄 LoginPage mount - isAuthenticated:', isAuthenticated, 'isLoading:', isLoading);
+    if (isAuthenticated && !isLoading) {
+      console.log('➡️ Ya autenticado, redirigiendo al dashboard...');
+      navigate('/dashboard');
+    }
+  }, []); // Solo al montar
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-
     try {
+      let success = false;
       if (isLoginMode) {
-        await mockLogin(formData.email, formData.password);
-        setMessage('✅ Login successful!');
+        success = await login(formData.email, formData.password);
       } else {
-        await mockRegister({
+        success = await register({
           name: formData.name,
           email: formData.email,
           location: formData.location,
@@ -49,14 +41,14 @@ const LoginPage = () => {
           bio: '',
           goals: []
         });
-        setMessage('✅ Registration successful!');
       }
-      setIsAuthenticated(true);
+
+      if (success) {
+        console.log('🚀 Autenticación completada, redirigiendo...');
+        navigate('/dashboard');
+      }
     } catch (error) {
-      console.error('❌ Error:', error);
-      setMessage('❌ Something went wrong. Please try again.');
-    } finally {
-      setIsLoading(false);
+      console.error('Authentication error:', error);
     }
   };
 
@@ -66,17 +58,6 @@ const LoginPage = () => {
       [e.target.name]: e.target.value
     });
   };
-
-  if (isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <h1 className="text-2xl font-bold text-green-600">🎉 {message}</h1>
-          <p className="text-slate-700">You are now logged in. This is a standalone component.</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -131,9 +112,9 @@ const LoginPage = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                       placeholder="Enter your full name"
-                      required
+                      required={!isLoginMode}
                     />
                   </div>
                 </div>
@@ -147,9 +128,9 @@ const LoginPage = () => {
                       name="location"
                       value={formData.location}
                       onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="e.g., Bogotá, Colombia"
-                      required
+                      className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                      placeholder="e.g., Madrid, Spain"
+                      required={!isLoginMode}
                     />
                   </div>
                 </div>
@@ -162,8 +143,8 @@ const LoginPage = () => {
                       name="instrument"
                       value={formData.instrument}
                       onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent appearance-none bg-white"
-                      required
+                      className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 appearance-none bg-white"
+                      required={!isLoginMode}
                     >
                       <option value="">Select an instrument</option>
                       <option value="Guitar">Guitar</option>
@@ -189,7 +170,7 @@ const LoginPage = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                   placeholder="Enter your email"
                   required
                 />
@@ -205,7 +186,7 @@ const LoginPage = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                   placeholder="Enter your password"
                   required
                 />
@@ -222,9 +203,9 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:from-purple-600 hover:to-blue-700 focus:ring-4 focus:ring-purple-200 disabled:opacity-50 shadow-lg"
+              className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:from-purple-600 hover:to-blue-700 focus:ring-4 focus:ring-purple-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             >
-              {isLoading ? 'Please wait...' : isLoginMode ? 'Sign In' : 'Create Account'}
+              {isLoading ? 'Please wait...' : (isLoginMode ? 'Sign In' : 'Create Account')}
             </button>
           </form>
 

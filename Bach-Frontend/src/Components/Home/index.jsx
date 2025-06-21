@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Music,
   Users,
@@ -8,6 +9,8 @@ import {
 } from "lucide-react";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-800 to-pink-800 text-white">
       {/* Hero Section */}
@@ -16,12 +19,17 @@ const Home = () => {
         <h1 className="text-4xl font-bold mb-2">SkillLink Creativo</h1>
         <p className="text-lg mb-6 max-w-xl">
           Connect, learn, and grow your musical skills with a community of passionate musicians
-        </p>
-        <div className="flex gap-4">
-          <button className="bg-white text-purple-800 font-semibold px-6 py-2 rounded-md hover:bg-purple-100 transition">
+        </p>        <div className="flex gap-4">
+          <button 
+            onClick={() => navigate('/login')}
+            className="bg-white text-purple-800 font-semibold px-6 py-2 rounded-md hover:bg-purple-100 transition"
+          >
             Start Your Journey →
           </button>
-          <button className="border border-white px-6 py-2 rounded-md hover:bg-white hover:text-purple-800 transition">
+          <button 
+            onClick={() => navigate('/login')}
+            className="border border-white px-6 py-2 rounded-md hover:bg-white hover:text-purple-800 transition"
+          >
             Sign In
           </button>
         </div>

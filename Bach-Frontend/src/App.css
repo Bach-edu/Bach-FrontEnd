@@ -1,0 +1,82 @@
+/* Mobile optimizations for screens smaller than 600px */
+@media (max-width: 600px) {
+  /* Ensure touch targets are at least 44px for better accessibility */
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent text overflow in navigation */
+  .mobile-nav-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 60px;
+  }
+  
+  /* Better spacing for very small screens */
+  .mobile-compact {
+    padding: 0.25rem;
+  }
+  
+  /* Optimize header height for mobile keyboards */
+  .mobile-header {
+    transition: height 0.3s ease;
+  }
+  
+  /* Improve readability on small screens */
+  .mobile-text-optimize {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  
+  /* Backdrop for mobile menu */
+  .mobile-menu-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 40;
+    backdrop-filter: blur(2px);
+  }
+  
+  .mobile-menu-panel {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+}
+
+/* Dropdown animation styles */
+.mobile-dropdown-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.mobile-dropdown-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.mobile-dropdown-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobile-dropdown-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Smooth transitions for user menu elements */
+.user-menu-transition {
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.user-menu-hidden {
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+}
