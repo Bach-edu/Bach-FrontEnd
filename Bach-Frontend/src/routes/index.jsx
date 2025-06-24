@@ -8,87 +8,87 @@ import ProfilePage from '../Components/Profile';
 import DiscoverPage from '../Components/Discover';
 import ChallengesPage from '../Components/Challenges';
 import MessagesPage from '../Components/Messages';
-// import ProgressPage from '../Components/Progress'; // TODO: Crear componente
+import ProgressPage from '../Components/Progress';
 import Header from '../Components/Header';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import ProtectedRoute from '../Components/ProtectedRoute';
 
 const RoutesComponent = () => {
-  const { isAuthenticated, isLoading, initialize } = useAuthStore();
+  const { isAuthenticated, isLoading, hasInitialized, initialize } = useAuthStore();
 
   useEffect(() => {
-    initialize();
-  }, [initialize]);
+    if (!hasInitialized) {
+      initialize();
+    }
+  }, [initialize, hasInitialized]);
 
-  if (isLoading) {
+  // Mostrar loading spinner mientras se inicializa la app
+  if (isLoading || !hasInitialized) {
     return <LoadingSpinner />;
-  }
-  return (
+  }  return (
     <Router>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
         <Routes>
-          {/* Ruta principal siempre muestra Home */}
+          {/* Rutas públicas */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           
           {/* Rutas protegidas */}
-          {isAuthenticated && (
-            <>
-              <Route path="/dashboard" element={
-                <>
-                  <Header />
-                  <main className="pt-16">
-                    <Dashboard />
-                  </main>
-                </>
-              } />
-              <Route path="/profile" element={
-                <>
-                  <Header />
-                  <main className="pt-16">
-                    <ProfilePage />
-                  </main>
-                </>
-              } />
-              <Route path="/discover" element={
-                <>
-                  <Header />
-                  <main className="pt-16">
-                    <DiscoverPage />
-                  </main>
-                </>
-              } />
-              <Route path="/challenges" element={
-                <>
-                  <Header />
-                  <main className="pt-16">
-                    <ChallengesPage />
-                  </main>
-                </>
-              } />
-              <Route path="/messages" element={
-                <>
-                  <Header />
-                  <main className="pt-16">
-                    <MessagesPage />
-                  </main>
-                </>
-              } />
-              {/* TODO: Crear componente ProgressPage */}
-              {/*
-              <Route path="/progress" element={
-                <>
-                  <Header />
-                  <main className="pt-16">
-                    <ProgressPage />
-                  </main>
-                </>
-              } />
-              */}
-            </>
-          )}
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Header />
+              <main className="pt-16">
+                <Dashboard />
+              </main>
+            </ProtectedRoute>
+          } />
           
-          {/* Rutas de fallback */}
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Header />
+              <main className="pt-16">
+                <ProfilePage />
+              </main>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/discover" element={
+            <ProtectedRoute>
+              <Header />
+              <main className="pt-16">
+                <DiscoverPage />
+              </main>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/challenges" element={
+            <ProtectedRoute>
+              <Header />
+              <main className="pt-16">
+                <ChallengesPage />
+              </main>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/messages" element={
+            <ProtectedRoute>
+              <Header />
+              <main className="pt-16">
+                <MessagesPage />
+              </main>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/progress" element={
+            <ProtectedRoute>
+              <Header />
+              <main className="pt-16">
+                <ProgressPage />
+              </main>
+            </ProtectedRoute>
+          } />
+          
+          {/* Ruta de fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

@@ -9,13 +9,12 @@ const Header = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const menuRef = useRef(null);
-  
-  const navItems = [
+    const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: Music },
     { path: '/discover', label: 'Discover', icon: Search },
     { path: '/challenges', label: 'Challenges', icon: Trophy },
     { path: '/messages', label: 'Messages', icon: MessageSquare },
-    // { path: '/progress', label: 'Progress', icon: BarChart3 }, // TODO: Implementar ProgressPage
+    { path: '/progress', label: 'Progress', icon: BarChart3 },
     { path: '/profile', label: 'Profile', icon: User },
   ];
 

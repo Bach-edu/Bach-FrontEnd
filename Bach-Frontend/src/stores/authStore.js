@@ -41,10 +41,28 @@ export const useAuthStore = create(
       user: null,
       isAuthenticated: false,
       isLoading: true,
+      hasInitialized: false,
 
       initialize: () => {
         console.log('🔑 AuthStore inicializando...');
-        set({ isLoading: false });
+        const state = get();
+        
+        // Si ya tenemos datos persistidos, mantener el estado de autenticación
+        if (state.user) {
+          console.log('👤 Usuario encontrado en storage:', state.user.name);
+          set({ 
+            isAuthenticated: true, 
+            isLoading: false, 
+            hasInitialized: true 
+          });
+        } else {
+          console.log('🔍 No hay usuario en storage');
+          set({ 
+            isAuthenticated: false, 
+            isLoading: false, 
+            hasInitialized: true 
+          });
+        }
         console.log('⏱️ AuthStore inicialización completa');
       },
 
@@ -118,12 +136,12 @@ export const useAuthStore = create(
       setLoading: (loading) => {
         set({ isLoading: loading });
       }
-    }),
-    {
+    }),    {
       name: 'auth-storage',
       partialize: (state) => ({
         user: state.user,
-        isAuthenticated: state.isAuthenticated
+        isAuthenticated: state.isAuthenticated,
+        hasInitialized: false // Siempre empezar como false al cargar
       })
     }
   )

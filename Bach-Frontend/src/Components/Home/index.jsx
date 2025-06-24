@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../stores/authStore";
 import {
   Music,
   Users,
@@ -10,6 +11,14 @@ import {
 
 const Home = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, hasInitialized } = useAuthStore();
+
+  useEffect(() => {
+    // Solo redirigir si ya se inicializó el store y el usuario está autenticado
+    if (hasInitialized && isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, hasInitialized, navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-800 to-pink-800 text-white">
