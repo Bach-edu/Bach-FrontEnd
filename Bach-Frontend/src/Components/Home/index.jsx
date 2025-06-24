@@ -21,7 +21,8 @@ const Home = () => {
   }, [isAuthenticated, hasInitialized, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-800 to-pink-800 text-white">
+    <div className="min-h-screen">
+    <div className="bg-gradient-to-b from-purple-800 to-pink-800 text-white">
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center text-center px-4 py-20">
         <Music className="w-12 h-12 mb-4" />
@@ -91,6 +92,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+    </div>
     </div>
   );
 }
