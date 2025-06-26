@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Music, Mail, Lock, User, MapPin, Guitar, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
+// import { loginBack, registerBack } from '../../utils/api';
 
 const LoginPage = () => {
   const { login, register, isLoading, isAuthenticated } = useAuthStore();
@@ -26,11 +27,16 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       let success = false;
       if (isLoginMode) {
+        // const res = await loginBack(formData);
+        // console.log('inicio de sesion exitoso', res)
         success = await login(formData.email, formData.password);
       } else {
+        // const res = await registerBack(formData);
+        // console.log('registro existoso', res)
         success = await register({
           name: formData.name,
           email: formData.email,
@@ -79,22 +85,20 @@ const LoginPage = () => {
             <button
               type="button"
               onClick={() => setIsLoginMode(true)}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
-                isLoginMode
-                  ? 'bg-white text-purple-600 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-800'
-              }`}
+              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${isLoginMode
+                ? 'bg-white text-purple-600 shadow-sm'
+                : 'text-slate-600 hover:text-slate-800'
+                }`}
             >
               Login
             </button>
             <button
               type="button"
               onClick={() => setIsLoginMode(false)}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
-                !isLoginMode
-                  ? 'bg-white text-purple-600 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-800'
-              }`}
+              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${!isLoginMode
+                ? 'bg-white text-purple-600 shadow-sm'
+                : 'text-slate-600 hover:text-slate-800'
+                }`}
             >
               Register
             </button>
