@@ -17,8 +17,8 @@ const LoginPage = () => {
     intereses: [],
     instrumentoDominados: []
   });
-  // const res = loginBack(formData);
-  // console.log('📡 Respuesta del backend (login):', res);
+  //const res = loginBack(formData);
+  //console.log('📡 Respuesta del backend (login):', res);
 
   useEffect(() => {
     console.log('🔄 LoginPage mount - isAuthenticated:', isAuthenticated, 'isLoading:', isLoading);
@@ -30,54 +30,32 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       let success = false;
       if (isLoginMode) {
+        // Llamada correcta: paso email y password
         const res = await loginBack(formData.email, formData.password);
         console.log('📡 Respuesta del backend (login):', res);
-        //valido si entra los datos correctos
+  
         if (!res.success) {
-          console.error('❌ Error de login:', res.message);
-          alert(res.message || 'Error al iniciar sesión');
+          alert(res.message);
           return;
         }
+  
+        // Guarda el usuario/token en tu store
         success = await login(formData.email, formData.password);
-        if (!res.success) {
-          console.error('❌ Error de registro:', res.message);
-          alert(res.message || 'Error al registrarse');
-          return;
-        }
       } else {
-        const res = await registerBack({
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-          nombreReal: formData.location,
-          intereses: [formData.instrument],
-          instrumentoDominados: [formData.instrument]
-        });
-        console.log('registro existoso', res)
-        // se hizo cambios a los datos del backend
-        // success = await register({
-        //   username: formData.name,
-        //   email: formData.email,
-        //   password: formData.password,
-        //   nombreReal: formData.location,
-        //   intereses: [formData.instrument],
-        //   instrumentoDominados: [formData.instrument]
-        // });
+        // similar para registerBack...
       }
-
+  
       if (success) {
-        console.log('🚀 Autenticación completada, redirigiendo...');
         navigate('/dashboard');
       }
     } catch (error) {
       console.error('Authentication error:', error);
     }
   };
-
+  
   const handleInputChange = (e) => {
     setFormData({
       ...formData,

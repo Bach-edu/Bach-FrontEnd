@@ -14,17 +14,19 @@ const axiosInstance = axios.create({
 //     const response = await axiosInstance.post("/login", usuario);
 //     return response.data;
 // }
-export const loginBack = async ({ email, password }) => {
-    return await axios.post('http://localhost:8080/login', {
-        email,
-        password
-    }, {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        withCredentials: true
-    });
-};
+export async function loginBack(email, password) {
+    try {
+      const response = await axiosInstance.post("/login", { email, password });
+      // response.data debería ser tu DTORespuestaUsuario o token
+      return { success: true, data: response.data };
+    } catch (error) {
+      console.error("❌ loginBack error:", error);
+      return {
+        success: false,
+        message: error.response?.data?.message || "Error al iniciar sesión"
+      };
+    }
+  }
 
 export async function registerBack(usuario) {
     const response = await axiosInstance.post("/usuarios/registrar", usuario);
