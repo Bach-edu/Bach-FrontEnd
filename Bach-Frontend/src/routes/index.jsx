@@ -89,9 +89,11 @@ const RoutesComponent = () => {
             </ProtectedRoute>
           } />
 
-          {/* Ruta de fallback */}
+          {/* Ruta de fallback
           <Route path="/certificate" element={
             <Certificate />} />
+           */}
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

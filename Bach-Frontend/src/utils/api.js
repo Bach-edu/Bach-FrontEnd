@@ -1,21 +1,32 @@
-const API_URL = "http://localhost:8080/";
+import axios from "axios";
 
-export async function loginBack(user) {
-    const response = await fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(user),
-    });
-    return response.json();
-}
+const API_URL = "http://localhost:8080";
 
-export async function registerBack(user) {
-    const response = await fetch(`${API_URL}/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(user),
+const axiosInstance = axios.create({
+    baseURL: API_URL,
+    withCredentials: true,
+    headers: {
+        "Content-Type": "application/json",
+    },
+});
+
+// export async function loginBack(usuario) {
+//     const response = await axiosInstance.post("/login", usuario);
+//     return response.data;
+// }
+export const loginBack = async ({ email, password }) => {
+    return await axios.post('http://localhost:8080/login', {
+        email,
+        password
+    }, {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        withCredentials: true
     });
-    return response.json();
+};
+
+export async function registerBack(usuario) {
+    const response = await axiosInstance.post("/usuarios/registrar", usuario);
+    return response.data;
 }

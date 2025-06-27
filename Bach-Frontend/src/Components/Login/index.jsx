@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Music, Mail, Lock, User, MapPin, Guitar, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
-// import { loginBack, registerBack } from '../../utils/api';
+import { loginBack, registerBack } from '../../utils/api';
 
 const LoginPage = () => {
   const { login, register, isLoading, isAuthenticated } = useAuthStore();
@@ -10,12 +10,15 @@ const LoginPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-    location: '',
-    instrument: ''
+    username: '',
+    email: "",
+    password: "",
+    nombreReal: '',
+    intereses: [],
+    instrumentoDominados: []
   });
+  // const res = loginBack(formData);
+  // console.log('📡 Respuesta del backend (login):', res);
 
   useEffect(() => {
     console.log('🔄 LoginPage mount - isAuthenticated:', isAuthenticated, 'isLoading:', isLoading);
@@ -31,22 +34,39 @@ const LoginPage = () => {
     try {
       let success = false;
       if (isLoginMode) {
-        // const res = await loginBack(formData);
-        // console.log('inicio de sesion exitoso', res)
+        const res = await loginBack(formData.email, formData.password);
+        console.log('📡 Respuesta del backend (login):', res);
+        //valido si entra los datos correctos
+        if (!res.success) {
+          console.error('❌ Error de login:', res.message);
+          alert(res.message || 'Error al iniciar sesión');
+          return;
+        }
         success = await login(formData.email, formData.password);
+        if (!res.success) {
+          console.error('❌ Error de registro:', res.message);
+          alert(res.message || 'Error al registrarse');
+          return;
+        }
       } else {
-        // const res = await registerBack(formData);
-        // console.log('registro existoso', res)
-        success = await register({
-          name: formData.name,
+        const res = await registerBack({
+          username: formData.username,
           email: formData.email,
-          location: formData.location,
-          instruments: [formData.instrument],
-          skillLevel: 'beginner',
-          genres: [],
-          bio: '',
-          goals: []
+          password: formData.password,
+          nombreReal: formData.location,
+          intereses: [formData.instrument],
+          instrumentoDominados: [formData.instrument]
         });
+        console.log('registro existoso', res)
+        // se hizo cambios a los datos del backend
+        // success = await register({
+        //   username: formData.name,
+        //   email: formData.email,
+        //   password: formData.password,
+        //   nombreReal: formData.location,
+        //   intereses: [formData.instrument],
+        //   instrumentoDominados: [formData.instrument]
+        // });
       }
 
       if (success) {
