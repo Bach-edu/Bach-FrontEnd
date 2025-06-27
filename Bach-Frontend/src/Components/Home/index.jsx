@@ -21,11 +21,12 @@ const Home = () => {
   }, [isAuthenticated, hasInitialized, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-800 to-pink-800 text-white">
+    <div className="min-h-screen">
+    <div className="bg-gradient-to-b from-purple-800 to-pink-800 text-white">
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center text-center px-4 py-20">
         <Music className="w-12 h-12 mb-4" />
-        <h1 className="text-4xl font-bold mb-2">SkillLink Creativo</h1>
+        <h1 className="text-4xl font-bold mb-2">Bach</h1>
         <p className="text-lg mb-6 max-w-xl">
           Connect, learn, and grow your musical skills with a community of passionate musicians
         </p>        <div className="flex gap-4">
@@ -91,6 +92,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+    </div>
     </div>
   );
 }
