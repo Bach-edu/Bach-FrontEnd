@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { loginBack, registerBack } from '../utils/api'; // Asegúrate de que esta ruta sea correcta  
 
 // Mock user data
 const mockUser = {
@@ -46,21 +47,21 @@ export const useAuthStore = create(
       initialize: () => {
         console.log('🔑 AuthStore inicializando...');
         const state = get();
-        
+
         // Si ya tenemos datos persistidos, mantener el estado de autenticación
         if (state.user) {
           console.log('👤 Usuario encontrado en storage:', state.user.name);
-          set({ 
-            isAuthenticated: true, 
-            isLoading: false, 
-            hasInitialized: true 
+          set({
+            isAuthenticated: true,
+            isLoading: false,
+            hasInitialized: true
           });
         } else {
           console.log('🔍 No hay usuario en storage');
-          set({ 
-            isAuthenticated: false, 
-            isLoading: false, 
-            hasInitialized: true 
+          set({
+            isAuthenticated: false,
+            isLoading: false,
+            hasInitialized: true
           });
         }
         console.log('⏱️ AuthStore inicialización completa');
@@ -89,11 +90,13 @@ export const useAuthStore = create(
         set({ isLoading: true });
 
         try {
-          await new Promise(resolve => setTimeout(resolve, 500));
+          // llamamos al backend para registrar al usuario
+          const response = await registerBack(userData);
+
 
           const user = {
             ...mockUser,
-            ...userData,
+            ...response.usuario,
             id: Date.now().toString(),
             avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.email}`
           };
@@ -126,14 +129,14 @@ export const useAuthStore = create(
       setLoading: (loading) => {
         set({ isLoading: loading });
       }
-    }),    {
-      name: 'auth-storage',
-      partialize: (state) => ({
-        user: state.user,
-        isAuthenticated: state.isAuthenticated,
-        hasInitialized: false // Siempre empezar como false al cargar
-      })
-    }
+    }), {
+    name: 'auth-storage',
+    partialize: (state) => ({
+      user: state.user,
+      isAuthenticated: state.isAuthenticated,
+      hasInitialized: false // Siempre empezar como false al cargar
+    })
+  }
   )
-  
+
 );

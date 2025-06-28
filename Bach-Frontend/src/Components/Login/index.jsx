@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Music, Mail, Lock, User, MapPin, Guitar, Eye, EyeOff } from 'lucide-react';
+import { Music, Mail, Lock, User, Guitar, Piano, SmilePlus, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { loginBack, registerBack } from '../../utils/api';
 
@@ -14,8 +14,8 @@ const LoginPage = () => {
     email: "",
     password: "",
     nombreReal: '',
-    intereses: [],
-    instrumentoDominados: []
+    intereses: '',
+    instrumentoDominados: ''
   });
   //const res = loginBack(formData);
   //console.log('📡 Respuesta del backend (login):', res);
@@ -36,18 +36,31 @@ const LoginPage = () => {
         // Llamada correcta: paso email y password
         const res = await loginBack(formData.email, formData.password);
         console.log('📡 Respuesta del backend (login):', res);
-  
+
         if (!res.success) {
           alert(res.message);
           return;
         }
-  
+
         // Guarda el usuario/token en tu store
         success = await login(formData.email, formData.password);
       } else {
         // similar para registerBack...
+        const userData = {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          nombreReal: formData.nombreReal,
+          intereses: [formData.intereses],
+          instrumentoDominados: [formData.instrumentoDominados]
+        };
+        console.log('🧾 Enviando al backend:', JSON.stringify(userData, null, 2));
+        const res = await registerBack(userData);
+        console.log('📡 Respuesta del backend (register):', res);
+        if (res.success === false) { alert(res.message); return; }
+        success = await register(userData);
       }
-  
+
       if (success) {
         navigate('/dashboard');
       }
@@ -55,7 +68,7 @@ const LoginPage = () => {
       console.error('Authentication error:', error);
     }
   };
-  
+
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -71,13 +84,13 @@ const LoginPage = () => {
             <Music className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
-            SkillLink Creativo
+            Bach Edu
           </h1>
           <p className="text-slate-600">
             {isLoginMode ? 'Welcome back! Continue your musical journey' : 'Start your musical adventure today'}
           </p>
         </div>
-
+        {/* Empieza formulario */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-slate-200/50">
           <div className="flex mb-6 bg-slate-100 rounded-xl p-1">
             <button
@@ -88,6 +101,7 @@ const LoginPage = () => {
                 : 'text-slate-600 hover:text-slate-800'
                 }`}
             >
+
               Login
             </button>
             <button
@@ -98,6 +112,7 @@ const LoginPage = () => {
                 : 'text-slate-600 hover:text-slate-800'
                 }`}
             >
+
               Register
             </button>
           </div>
@@ -111,8 +126,8 @@ const LoginPage = () => {
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
                       type="text"
-                      name="name"
-                      value={formData.name}
+                      name="nombreReal"
+                      value={formData.nombreReal}
                       onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                       placeholder="Enter your full name"
@@ -122,41 +137,62 @@ const LoginPage = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Location</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Username</label>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                    <SmilePlus className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
                       type="text"
-                      name="location"
-                      value={formData.location}
+                      name="username"
+                      value={formData.username}
                       onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                      placeholder="e.g., Madrid, Spain"
+                      placeholder="Create a artist username"
                       required={!isLoginMode}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Primary Instrument</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Instruments</label>
                   <div className="relative">
                     <Guitar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <select
-                      name="instrument"
-                      value={formData.instrument}
+                      name="instrumentoDominados"
+                      value={formData.instrumentoDominados}
                       onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 appearance-none bg-white"
                       required={!isLoginMode}
                     >
                       <option value="">Select an instrument</option>
-                      <option value="Guitar">Guitar</option>
-                      <option value="Piano">Piano</option>
-                      <option value="Violin">Violin</option>
-                      <option value="Drums">Drums</option>
-                      <option value="Bass">Bass</option>
-                      <option value="Vocals">Vocals</option>
-                      <option value="Saxophone">Saxophone</option>
-                      <option value="Trumpet">Trumpet</option>
+                      <option value="PIANO">PIANO</option>
+                      <option value="GUITARRA">GUITARRA</option>
+                      <option value="VIOLIN">VIOLIN</option>
+                      <option value="BATERIA">BATERIA</option>
+                      <option value="VOCAL">VOCAL</option>
+                      <option value="OTROS">OTROS</option>
+
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Interest</label>
+                  <div className="relative">
+                    <Piano className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                    <select
+                      name="intereses"
+                      value={formData.intereses}
+                      onChange={handleInputChange}
+                      className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 appearance-none bg-white"
+                      required={!isLoginMode}
+                    >
+                      <option value="">Select an option</option>
+                      <option value="INSTRUMENTO">INSTRUMENTO</option>
+                      <option value="TEORIA">TEORIA</option>
+                      <option value="COMPOSICION">COMPOSICION</option>
+                      <option value="PRODUCCION">PRODUCCION</option>
+                      <option value="OTROS">OTROS</option>
+
+
                     </select>
                   </div>
                 </div>
