@@ -67,28 +67,18 @@ export const useAuthStore = create(
       },
 
       login: async (email, password) => {
-        console.log('🔐 Iniciando login para:', email);
         set({ isLoading: true });
-
         try {
-          await new Promise(resolve => setTimeout(resolve, 500));
-
-          const user = {
-            ...mockUser,
-            email,
-            name: email.split('@')[0]
-          };
-
+          const { data } = await loginBack(email, password);
+          // data debe contener tu DTORespuestaUsuario o token
           set({
-            user,
+            user: data,
             isAuthenticated: true,
             isLoading: false
           });
-
-          console.log('✅ Login exitoso!');
           return true;
-        } catch (error) {
-          console.error('❌ Error en login:', error);
+        } catch (err) {
+          console.error(err);
           set({ isLoading: false });
           return false;
         }
@@ -145,4 +135,5 @@ export const useAuthStore = create(
       })
     }
   )
+  
 );

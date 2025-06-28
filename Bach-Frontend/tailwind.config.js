@@ -8,9 +8,9 @@ export default {
     extend: {
       screens: {
         'xs': '480px',
-        'max-xs': {'max': '479px'},
-        'max-sm-mobile': {'max': '599px'},
-        'mobile': {'max': '600px'},
+        'max-xs': { 'max': '479px' },
+        'max-sm-mobile': { 'max': '599px' },
+        'mobile': { 'max': '600px' },
       },
       spacing: {
         '0.5': '0.125rem',

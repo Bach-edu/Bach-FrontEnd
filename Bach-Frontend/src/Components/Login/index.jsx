@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Music, Mail, Lock, User, MapPin, Guitar, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
+import { loginBack, registerBack } from '../../utils/api';
 
 const LoginPage = () => {
   const { login, register, isLoading, isAuthenticated } = useAuthStore();
@@ -9,12 +10,15 @@ const LoginPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-    location: '',
-    instrument: ''
+    username: '',
+    email: "",
+    password: "",
+    nombreReal: '',
+    intereses: [],
+    instrumentoDominados: []
   });
+  //const res = loginBack(formData);
+  //console.log('📡 Respuesta del backend (login):', res);
 
   useEffect(() => {
     console.log('🔄 LoginPage mount - isAuthenticated:', isAuthenticated, 'isLoading:', isLoading);
@@ -29,29 +33,29 @@ const LoginPage = () => {
     try {
       let success = false;
       if (isLoginMode) {
+        // Llamada correcta: paso email y password
+        const res = await loginBack(formData.email, formData.password);
+        console.log('📡 Respuesta del backend (login):', res);
+  
+        if (!res.success) {
+          alert(res.message);
+          return;
+        }
+  
+        // Guarda el usuario/token en tu store
         success = await login(formData.email, formData.password);
       } else {
-        success = await register({
-          name: formData.name,
-          email: formData.email,
-          location: formData.location,
-          instruments: [formData.instrument],
-          skillLevel: 'beginner',
-          genres: [],
-          bio: '',
-          goals: []
-        });
+        // similar para registerBack...
       }
-
+  
       if (success) {
-        console.log('🚀 Autenticación completada, redirigiendo...');
         navigate('/dashboard');
       }
     } catch (error) {
       console.error('Authentication error:', error);
     }
   };
-
+  
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -79,22 +83,20 @@ const LoginPage = () => {
             <button
               type="button"
               onClick={() => setIsLoginMode(true)}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
-                isLoginMode
-                  ? 'bg-white text-purple-600 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-800'
-              }`}
+              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${isLoginMode
+                ? 'bg-white text-purple-600 shadow-sm'
+                : 'text-slate-600 hover:text-slate-800'
+                }`}
             >
               Login
             </button>
             <button
               type="button"
               onClick={() => setIsLoginMode(false)}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
-                !isLoginMode
-                  ? 'bg-white text-purple-600 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-800'
-              }`}
+              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${!isLoginMode
+                ? 'bg-white text-purple-600 shadow-sm'
+                : 'text-slate-600 hover:text-slate-800'
+                }`}
             >
               Register
             </button>

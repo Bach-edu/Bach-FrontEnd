@@ -12,6 +12,7 @@ import ProgressPage from '../Components/Progress';
 import Header from '../Components/Header';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import ProtectedRoute from '../Components/ProtectedRoute';
+import Certificate from '../Components/Certificate/Certificate';
 
 const RoutesComponent = () => {
   const { isAuthenticated, isLoading, hasInitialized, initialize } = useAuthStore();
@@ -25,14 +26,14 @@ const RoutesComponent = () => {
   // Mostrar loading spinner mientras se inicializa la app
   if (isLoading || !hasInitialized) {
     return <LoadingSpinner />;
-  }  return (
+  } return (
     <Router>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
         <Routes>
           {/* Rutas públicas */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          
+
           {/* Rutas protegidas */}
           <Route path="/dashboard" element={
             <ProtectedRoute>
@@ -42,7 +43,7 @@ const RoutesComponent = () => {
               </main>
             </ProtectedRoute>
           } />
-          
+
           <Route path="/profile" element={
             <ProtectedRoute>
               <Header />
@@ -51,7 +52,7 @@ const RoutesComponent = () => {
               </main>
             </ProtectedRoute>
           } />
-          
+
           <Route path="/discover" element={
             <ProtectedRoute>
               <Header />
@@ -60,7 +61,7 @@ const RoutesComponent = () => {
               </main>
             </ProtectedRoute>
           } />
-          
+
           <Route path="/challenges" element={
             <ProtectedRoute>
               <Header />
@@ -69,7 +70,7 @@ const RoutesComponent = () => {
               </main>
             </ProtectedRoute>
           } />
-          
+
           <Route path="/messages" element={
             <ProtectedRoute>
               <Header />
@@ -78,7 +79,7 @@ const RoutesComponent = () => {
               </main>
             </ProtectedRoute>
           } />
-          
+
           <Route path="/progress" element={
             <ProtectedRoute>
               <Header />
@@ -87,8 +88,12 @@ const RoutesComponent = () => {
               </main>
             </ProtectedRoute>
           } />
-          
-          {/* Ruta de fallback */}
+
+          {/* Ruta de fallback
+          <Route path="/certificate" element={
+            <Certificate />} />
+           */}
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
